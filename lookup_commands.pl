@@ -1,4 +1,4 @@
-#!/usr/bin/perl -d  
+#!/usr/bin/perl
 #
 use strict;
 
@@ -23,8 +23,9 @@ my @commands=();
 my $count=1;
 while(my $line=<MYFILE>) {
     chomp $line;
+    next if($line=~/^\s*#/); # ignore all lines starting with #
+
     my $pos=index($line,':');
-    next if($line=/^\s+#/); # ignore all lines starting with #
 
     my $tags=substr($line,0,$pos);
     my $description=substr($line,$pos+1); 
