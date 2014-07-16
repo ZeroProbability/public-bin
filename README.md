@@ -9,7 +9,7 @@ lookup_commands.pl
 
 This script helps me store, organize and retrieve one-line command line scripts that I use frequently. Bash history is really good for 75% of the time, but often times searching through the history to pick out the correct command is no so easy. 
 
-This script looks for a file named `commands.txt` in your home folder (can be over-ridden using environment variable LOOKUP\_FILE\_NAME.
+This script looks for a file named `commands.txt` in your home folder (can be over-ridden using environment variable LOOKUP\_FILE\_NAME).
 
 The commands file is of following format.
 
