@@ -33,6 +33,9 @@ my @commands=@{Lookup::extract_commands(\@records, \@lookup_tags)};
 
 # - display menu
 my $count=0;
+if((scalar @commands) > 0) {
+    print STDERR "Commands \n----------------------------------------------\n";
+}
 foreach my $command (@commands) {
     print STDERR (++$count).':'.$command->{'command'}."\n";
     print STDERR "\t\t - ".$command->{'description'}."\n";

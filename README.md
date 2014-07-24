@@ -19,7 +19,9 @@ Example:
 
     convert, links: replace soft links with real files  : for file in `find . -type l`; do echo "`readlink $file` --> $file"; cp --remove-destination `readlink $file` $file; done
 
-I also have following lines in my .bashrc that simplifies command lookup.
+The commands can have placeholders in them with format `${var:default_value}`. If the script finds any such placeholders, it prompts user to enter a value.
+
+I also have following lines in my `.bashrc` that simplifies command lookup.
 
     alias lookup="_lookup $*"
     _lookup() 
@@ -45,4 +47,5 @@ Once you have both setup, log back in into the shell and execute
     
 The script should lookup your tags and list the matching commands for you to choose. Chosen script is executed.
 
-__note__: the additional history command in the _lookup() function above will put the command in history so that the next time you could recall the command directly from history.
+__note__: the additional history command in the `\_lookup()` function above will put the command in history so that the next time you could recall the command directly from history.
+
