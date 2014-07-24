@@ -55,6 +55,17 @@ if($count > 1) {
 }
 
 # - if there are place holders ask for values
+while($exec_command =~/\${(.*?)(:(.*?))?}/) {
+    my $var=$1;
+    my $value=(defined $3)?$3:"";
+
+    print STDERR "\nEnter value for '$var' (default: '$value')?\n";
+    my $changed_value=<STDIN>;
+    chomp $changed_value;
+    $value=$changed_value if($changed_value ne "");
+
+    $exec_command=~s/\${.*?}/$value/;
+}
 
 # - print chosen command - shell function should pick this up and execute
 print $exec_command;
