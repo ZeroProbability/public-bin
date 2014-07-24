@@ -24,33 +24,32 @@ if(scalar @ARGV==0) {
 }
 my @lookup_tags=@ARGV;
 
+# - read contents from the file
 open (MYFILE, $commands_file) || die "Unable to open file $commands_file";
 my @records=<MYFILE>;
 close(MYFILE);
 
-@records=grep(!/^\s*#/, @records);   # remove comments
-@records=grep(!/^\s*$/, @records);   # remove empty lines
+my @commands=@{Lookup::extract_commands(\@records, \@lookup_tags)};
 
-my @commands=();
-foreach my $line (@records) {
-    my %record=Lookup::decompose($line);
-    my $matched=Lookup::tags_match(\@lookup_tags, \@{$record{'tags'}});
-
-    if ($matched) {
-        push (@commands,\%record);
-    }
-}
-
+# - display menu
 my $count=1;
-foreach my $record (@commands) {
-    print STDERR $count++.':'.$record->{'command'}."\n";
-    print STDERR "\t\t - ".$record->{'description'}."\n";
+foreach my $command (@commands) {
+    print STDERR $count++.':'.$command->{'command'}."\n";
+    print STDERR "\t\t - ".$command->{'description'}."\n";
+}
+if($count==1) {
+    print STDERR "No command found for tags - @lookup_tags.\n";
+    exit 1;
 }
 
+# - accept option
 print STDERR "which one do you want to execute?\n";
 my $option=<STDIN>;
 chomp $option;
 exit 0 if($option eq "");
+my $exec_command=$commands[$option-1]->{'command'};
 
-print $commands[$option-1]->{'command'};
+# - print chosen command - shell function should pick this up and execute
+print $exec_command;
+exit 0;
 

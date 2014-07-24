@@ -46,4 +46,23 @@ sub decompose {
     return %record;
 }
 
+sub extract_commands {
+    my ($records_ref, $lookup_ref)=@_;
+    my @records=@{$records_ref};
+    my @lookup_tags=@{$lookup_ref};
+    @records=grep(!/^\s*#/, @records);   # remove comments
+    @records=grep(!/^\s*$/, @records);   # remove empty lines
+
+    my @commands=();
+    foreach my $line (@records) {
+        my %record=decompose($line);
+        my $matched=tags_match(\@lookup_tags, \@{$record{'tags'}});
+
+        if ($matched) {
+            push (@commands,\%record);
+        }
+    }
+    return \@commands;
+}
+
 1;
