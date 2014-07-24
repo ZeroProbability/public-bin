@@ -1,6 +1,12 @@
 #!/usr/bin/perl
 #
 use strict;
+use warnings;
+
+use FindBin;
+use lib $FindBin::Bin; 
+
+use Lookup;
 
 my $commands_file=$ENV{"HOME"} . "/commands.txt";
 if (exists $ENV{'LOOKUP_COMMAND_FILE'}) {
@@ -16,49 +22,35 @@ if(scalar @ARGV==0) {
     print STDERR "No arguments passed.","\n";
     exit 1;
 }
+my @lookup_tags=@ARGV;
 
-open (MYFILE, $commands_file);
+open (MYFILE, $commands_file) || die "Unable to open file $commands_file";
+my @records=<MYFILE>;
+close(MYFILE);
+
+@records=grep(!/^\s*#/, @records);   # remove comments
+@records=grep(!/^\s*$/, @records);   # remove empty lines
 
 my @commands=();
-my $count=1;
-while(my $line=<MYFILE>) {
-    chomp $line;
-    next if($line=~/^\s*#/); # ignore all lines starting with #
+foreach my $line (@records) {
+    my %record=Lookup::decompose($line);
+    my $matched=Lookup::tags_match(\@lookup_tags, \@{$record{'tags'}});
 
-    my $pos=index($line,':');
-
-    my $tags=substr($line,0,$pos);
-    my $description=substr($line,$pos+1); 
-    my $pos_next=index($description, ':');
-    my $command=substr($description,$pos_next+1); $command=~s/\s+(.*)/$1/;
-    $description=substr($description, 0, $pos_next);
-    next if($command eq "");
-
-    my $match_found=0;
-    foreach my $arg (@ARGV) {
-        foreach my $tag (split(/,/, $tags)) {
-            $tag =~ s/^\s+|\s+$//g;
-            $match_found++ if ($arg eq $tag || "${arg}s" eq $tag  || 
-                $arg eq "${tag}s" );
-        }
-    }
-    if ($match_found==($#ARGV+1)) {
-        print STDERR $count++, " : ", $command, "\n";
-        print STDERR "\t\t - $description\n";
-        push (@commands,$command);
+    if ($matched) {
+        push (@commands,\%record);
     }
 }
 
-close (MYFILE);
-
-if(scalar @commands==0) {
-    print STDERR "No command found matching those tags\n";
-    exit 0
-} 
+my $count=1;
+foreach my $record (@commands) {
+    print STDERR $count++.':'.$record->{'command'}."\n";
+    print STDERR "\t\t - ".$record->{'description'}."\n";
+}
 
 print STDERR "which one do you want to execute?\n";
 my $option=<STDIN>;
 chomp $option;
 exit 0 if($option eq "");
 
-print $commands[$option-1];
+print $commands[$option-1]->{'command'};
+
