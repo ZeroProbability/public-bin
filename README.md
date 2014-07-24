@@ -24,9 +24,19 @@ I also have following lines in my .bashrc that simplifies command lookup.
     alias lookup="_lookup $*"
     _lookup() 
     {
-        __COMMAND=$(${HOME}/bin/lookup_commands.pl $*)
-        history -s $__COMMAND
-        eval $__COMMAND
+        __COMMAND=$(${HOME}/bin/public-bin/lookup_commands.pl $*)
+        if [ "$?" -gt "0" ]; then
+            return
+        fi
+        echo "About to execute: $__COMMAND"
+        read -p "Proceed [y/n]? " -n 1 -r
+        echo  # new line 
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+            history -s $__COMMAND
+            eval $__COMMAND
+        else 
+            echo "Command skipped."
+        fi
     }
 
 Once you have both setup, log back in into the shell and execute

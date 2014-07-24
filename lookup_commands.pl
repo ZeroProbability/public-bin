@@ -32,22 +32,29 @@ close(MYFILE);
 my @commands=@{Lookup::extract_commands(\@records, \@lookup_tags)};
 
 # - display menu
-my $count=1;
+my $count=0;
 foreach my $command (@commands) {
-    print STDERR $count++.':'.$command->{'command'}."\n";
+    print STDERR (++$count).':'.$command->{'command'}."\n";
     print STDERR "\t\t - ".$command->{'description'}."\n";
 }
-if($count==1) {
+if($count==0) {
     print STDERR "No command found for tags - @lookup_tags.\n";
     exit 1;
 }
 
-# - accept option
-print STDERR "which one do you want to execute?\n";
-my $option=<STDIN>;
-chomp $option;
-exit 0 if($option eq "");
-my $exec_command=$commands[$option-1]->{'command'};
+# - if there were more then one command prompt user
+my $exec_command="";
+if($count > 1) {
+    print STDERR "which one do you want to execute?\n";
+    my $option=<STDIN>;
+    chomp $option;
+    exit 0 if($option eq "");
+    $exec_command=$commands[$option-1]->{'command'};
+} else {
+    $exec_command=$commands[0]->{'command'};
+}
+
+# - if there are place holders ask for values
 
 # - print chosen command - shell function should pick this up and execute
 print $exec_command;
