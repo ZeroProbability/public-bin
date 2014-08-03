@@ -29,3 +29,5 @@ ok(!Lookup::tags_match(\@small_1,\@big), 'simple case 2');
 ok(Lookup::tags_match(\@small_1,\@big), 'simple case 3');
 @small_1=qw/tag1 tagx/;
 ok(!Lookup::tags_match(\@small_1,\@big), 'simple case 4');
+
+groovy, env : import groovy environment: . $(locate ~/*/groovy*env*.sh)
