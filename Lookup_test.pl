@@ -29,5 +29,10 @@ ok(!Lookup::tags_match(\@small_1,\@big), 'simple case 2');
 ok(Lookup::tags_match(\@small_1,\@big), 'simple case 3');
 @small_1=qw/tag1 tagx/;
 ok(!Lookup::tags_match(\@small_1,\@big), 'simple case 4');
+# --- additional test
+my %decomposed=Lookup::decompose("groovy, env : import groovy environment: . $(locate ~/*/groovy*env*.sh)");
 
-groovy, env : import groovy environment: . $(locate ~/*/groovy*env*.sh)
+is(3,scalar @{$decomposed{'tags'}}, 'Count of commands match');
+my @expected=('tag1', 'tag2', 'tag3');
+is_deeply(\@expected, \@{$decomposed{'tags'}}, 'arrays match');
+i
