@@ -33,7 +33,7 @@ ok(!Lookup::tags_match(\@small_1,\@big), 'simple case 4');
 my %decomposed=Lookup::decompose("groovy, env : import groovy environment: . $(locate ~/*/groovy*env*.sh)");
 
 is(2,scalar @{$decomposed{'tags'}}, 'Count of commands match');
-my @expected=('groovy', 'eng');
+my @expected=('groovy', 'env');
 is_deeply(\@expected, \@{$decomposed{'tags'}}, 'arrays match');
 
 
