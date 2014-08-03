@@ -36,7 +36,7 @@ sub decompose {
     my @tempAry=split(/\s*,\s*/,$tags);
     my @tmpAry=();
     foreach my $s (@tempAry) {
-        $s=~s/^\s*(.*?)\s*$/$1/;
+        $s=~s/^\s*(.*)\s*$/$1/;
         push(@tmpAry, $s);
     }
     $record{'tags'}=\@tmpAry;
