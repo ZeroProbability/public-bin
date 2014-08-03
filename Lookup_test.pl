@@ -36,3 +36,4 @@ is(3,scalar @{$decomposed{'tags'}}, 'Count of commands match');
 my @expected=('tag1', 'tag2', 'tag3');
 is_deeply(\@expected, \@{$decomposed{'tags'}}, 'arrays match');
 
+
