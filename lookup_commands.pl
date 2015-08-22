@@ -33,14 +33,14 @@ my @commands=@{Lookup::extract_commands(\@records, \@lookup_tags)};
 
 # - display menu
 my $count=0;
-if((scalar @commands) > 0) {
+if((scalar @commands) > 1) {
     print STDERR "Commands \n----------------------------------------------\n";
+    foreach my $command (@commands) {
+        print STDERR (++$count).':'.$command->{'command'}."\n";
+        print STDERR "\t\t - ".$command->{'description'}."\n";
+    }
 }
-foreach my $command (@commands) {
-    print STDERR (++$count).':'.$command->{'command'}."\n";
-    print STDERR "\t\t - ".$command->{'description'}."\n";
-}
-if($count==0) {
+if((scalar @commands)==0) {
     print STDERR "No command found for tags - @lookup_tags.\n";
     exit 1;
 }
@@ -58,7 +58,7 @@ if($count > 1) {
 }
 
 # - if there are place holders ask for values
-while($exec_command =~/\${(.*?)(:(.*?))?}/) {
+while($exec_command =~/[^\$]\${(.*?)(:(.*?))?}/) {
     my $var=$1;
     my $value=(defined $3)?$3:"";
 
@@ -68,6 +68,9 @@ while($exec_command =~/\${(.*?)(:(.*?))?}/) {
     $value=$changed_value if($changed_value ne "");
 
     $exec_command=~s/\${.*?}/$value/;
+}
+while($exec_command =~/\$\${(.*?)}/) {
+    $exec_command=~s/\$\${(.*?)}/\${$1}/;
 }
 
 # - print chosen command - shell function should pick this up and execute
