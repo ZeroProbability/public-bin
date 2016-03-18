@@ -30,16 +30,12 @@ I also have following lines in my `.bashrc` that simplifies command lookup.
         if [ "$?" -gt "0" ]; then
             return
         fi
-        echo "About to execute: $__COMMAND"
-        read -p "Proceed [y/n]? " -n 1 -r
-        echo  # new line 
-        if [[ $REPLY =~ ^[Yy]$ ]]; then
-            history -s $__COMMAND
-            eval $__COMMAND
-        else 
-            echo "Command skipped."
-        fi
+        history -s $__COMMAND
+        ( sleep 1 && xdotool key Up Escape "0" & disown ) 2>/dev/null
     }
+    export LOOKUP_COMMAND_FILE=${HOME}/dot-files/commands.txt
+
+_Note_: for the above command to work you have to have xdotool installed.
 
 Once you have both setup, log back in into the shell and execute
 
