@@ -58,7 +58,7 @@ if($count > 1) {
 }
 
 # - if there are place holders ask for values
-while($exec_command =~/[^\$]\${(.*?)(:(.*?))?}/) {
+while($exec_command =~/[^\$]\$\{(.*?)(:(.*?))?\}/) {
     my $var=$1;
     my $value=(defined $3)?$3:"";
 
@@ -67,10 +67,10 @@ while($exec_command =~/[^\$]\${(.*?)(:(.*?))?}/) {
     chomp $changed_value;
     $value=$changed_value if($changed_value ne "");
 
-    $exec_command=~s/\${.*?}/$value/;
+    $exec_command=~s/\$\{.*?\}/$value/;
 }
-while($exec_command =~/\$\${(.*?)}/) {
-    $exec_command=~s/\$\${(.*?)}/\${$1}/;
+while($exec_command =~/\$\$\{(.*?)\}/) {
+    $exec_command=~s/\$\$\{(.*?)\}/\${$1}/;
 }
 
 # - print chosen command - shell function should pick this up and execute
