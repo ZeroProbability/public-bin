@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from string import Formatter
+import argparse
 
 def tags_match(small_list, full_list):
     return set(small_list) <= set(full_list)
@@ -20,6 +21,17 @@ def extract_commands(records, lookup_tags):
     lookup_tags = [t.strip().lower() for t in lookup_tags]
     decomposed_records = [r for r in decomposed_records if tags_match(lookup_tags, r['tags'])]
     return records
+
+def main():
+    # if there are no arguments 
+    parser = argparse.ArgumentParser()
+    parser.add_argument('tag', nargs="+")
+    args = parser.parse_args()
+
+    print(args.tags)
+
+if __name__ == "__main__":
+    main()
 
 # ------------------
 
