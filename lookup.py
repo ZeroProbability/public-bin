@@ -23,11 +23,9 @@ def extract_commands(records, lookup_tags):
     return records
 
 def main():
-    # if there are no arguments 
     parser = argparse.ArgumentParser()
     parser.add_argument('tag', nargs="+")
     args = parser.parse_args()
-
     print(args.tags)
 
 if __name__ == "__main__":
