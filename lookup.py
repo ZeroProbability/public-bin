@@ -1,8 +1,10 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import argparse
 import tempfile
 import re
+import sys
+import os
 
 def tags_match(small_list, full_list):
     return set(small_list) <= set(full_list)
@@ -20,15 +22,28 @@ def extract_commands(records, lookup_tags):
     decomposed_records = [decompose_line(r) for r in records]
     lookup_tags = [t.strip().lower() for t in lookup_tags]
     decomposed_records = [r for r in decomposed_records if tags_match(lookup_tags, r['tags'])]
-    return records
+    return decomposed_records
 
 def read_command_file(command_file):
-    command_file = command_file or '/home/anbu/commands.txt'
-    # TODO: read home variable from environment
+    
+    command_file = command_file or '{home}/commands.txt'.format(home=os.environ['HOME'])
+
     with open(command_file, 'r') as cf:
         lines = cf.readlines()
-
     return [f.strip() for f in lines]
+
+def execute_command(record_to_exec):
+    substituted_values = {}
+    for v in record_to_exec['variables']:
+        var, value = v.split(':')
+        uservalue = input("    {var} (default: {value}):".format(var, value))
+        uservalue = uservalue or value
+
+        substituted_values[var] = uservalue
+
+    cmd = record_to_exec['command'].replace()
+        
+    print(record_to_exec)
 
 def main():
     parser = argparse.ArgumentParser()
@@ -39,6 +54,18 @@ def main():
     records = read_command_file(args.command_file)
 
     matching_recs = extract_commands(records, args.tag)
+    if len(matching_recs) == 0:
+        pass
+    elif len(matching_recs) > 1:
+        print("More than one match found", file=sys.stderr)
+        for counter, rec in enumerate(matching_recs):
+            print("{}: {}".format(counter, rec['command']), file=sys.stderr)
+
+        print('Pick one:')
+        picked = int(input())
+        execute_command(matching_recs[picked])
+    else:
+        execute_command(matching_recs[0])
 
 if __name__ == "__main__":
     main()
