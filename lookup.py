@@ -18,7 +18,6 @@ def extract_commands(records, lookup_tags):
     records = [r for r in records if not r.strip().startswith('#')]
     records = [r for r in records if not r.strip() == '']
     decomposed_records = [decompose_line(r) for r in records]
-    print(decomposed_records)
     lookup_tags = [t.strip().lower() for t in lookup_tags]
     decomposed_records = [r for r in decomposed_records if tags_match(lookup_tags, r['tags'])]
     return records
