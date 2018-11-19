@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import argparse
 import tempfile
-from string import Formatter
+import re
 
 def tags_match(small_list, full_list):
     return set(small_list) <= set(full_list)
@@ -11,8 +11,7 @@ def decompose_line(line):
     tags, desc, command = line.split(':', 2)
     tags, desc, command = tags.strip(), desc.strip(), command.strip() 
     tags = [i.strip().lower() for i in tags.split(',')]
-    f = Formatter()
-    variables = [list(i)[1] for i in f.parse(command)]
+    variables = [i[2:-1] for i in re.findall(r'\${.*?}', command)]
     return {'tags': tags, 'description': desc, 'command': command, 'variables': variables}
 
 def extract_commands(records, lookup_tags):
@@ -48,8 +47,8 @@ if __name__ == "__main__":
 # ------------------
 
 def test_decompose_line():
-    assert decompose_line('a1, a2:  b   :   c:{d}:{e}') == \
-        {'tags': ['a1', 'a2'], 'description': 'b', 'command': 'c:{d}:{e}', 'variables': ['d', 'e']}
+    assert decompose_line('a1, a2:  b   :   c:${d}:${e}') == \
+        {'tags': ['a1', 'a2'], 'description': 'b', 'command': 'c:${d}:${e}', 'variables': ['d', 'e']}
 
 def test_tags_match():
     assert tags_match(['a', 'b'], ['a', 'b', 'c'])
