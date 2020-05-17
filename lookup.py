@@ -35,15 +35,22 @@ def read_command_file(command_file):
 def execute_command(record_to_exec):
     substituted_values = {}
     for v in record_to_exec['variables']:
-        var, value = v.split(':')
-        uservalue = input("    {var} (default: {value}):".format(var, value))
+        if ':' in v:
+            var, value = v.split(':')
+        else:
+            var, value = (v, '')
+        uservalue = input("    {var} (default: {value}):".format(var = var, value = value))
         uservalue = uservalue or value
 
         substituted_values[var] = uservalue
 
-    cmd = record_to_exec['command'].replace()
+    cmd = record_to_exec['command']
+
+    for var, value in substituted_values.items():
+        regex_to_be_replaced = r"\${{{var}.*}}".format(var = var)
+        cmd = re.sub(regex_to_be_replaced, value, cmd)
         
-    print(record_to_exec)
+    print(cmd, flush=True)
 
 def main():
     parser = argparse.ArgumentParser()
@@ -57,11 +64,11 @@ def main():
     if len(matching_recs) == 0:
         pass
     elif len(matching_recs) > 1:
-        print("More than one match found", file=sys.stderr)
+        print("More than one match found", file=sys.stderr, flush=True)
         for counter, rec in enumerate(matching_recs):
-            print("{}: {}".format(counter, rec['command']), file=sys.stderr)
+            print("{}: {}".format(counter, rec['command']), file=sys.stderr, flush=True)
 
-        print('Pick one:')
+        print('Pick one:', file=sys.stderr, flush=Ture)
         picked = int(input())
         execute_command(matching_recs[picked])
     else:
