@@ -39,7 +39,8 @@ def execute_command(record_to_exec):
             var, value = v.split(':')
         else:
             var, value = (v, '')
-        uservalue = input("    {var} (default: {value}):".format(var = var, value = value))
+        print("    {var} (default: {value}):".format(var = var, value = value), end='', file=sys.stderr, flush=True)
+        uservalue = input()
         uservalue = uservalue or value
 
         substituted_values[var] = uservalue
@@ -68,7 +69,7 @@ def main():
         for counter, rec in enumerate(matching_recs):
             print("{}: {}".format(counter, rec['command']), file=sys.stderr, flush=True)
 
-        print('Pick one:', file=sys.stderr, flush=Ture)
+        print('Pick one:', file=sys.stderr, flush=True)
         picked = int(input())
         execute_command(matching_recs[picked])
     else:
