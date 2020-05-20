@@ -63,7 +63,8 @@ def main():
 
     matching_recs = extract_commands(records, args.tag)
     if len(matching_recs) == 0:
-        pass
+        print("No matching command found", file=sys.stderr, flush=True)
+        sys.exit(2)
     elif len(matching_recs) > 1:
         print("More than one match found", file=sys.stderr, flush=True)
         for counter, rec in enumerate(matching_recs):
