@@ -36,7 +36,7 @@ def execute_command(record_to_exec):
     substituted_values = {}
     for v in record_to_exec['variables']:
         if ':' in v:
-            var, value = v.split(':')
+            var, value = v.split(':', 1)
         else:
             var, value = (v, '')
         print("    {var} (default: {value}):".format(var = var, value = value), end='', file=sys.stderr, flush=True)
