@@ -68,12 +68,15 @@ def main():
     elif len(matching_recs) > 1:
         print("More than one match found", file=sys.stderr, flush=True)
         for counter, rec in enumerate(matching_recs):
-            print("{}: {}".format(counter, rec['command']), file=sys.stderr, flush=True)
+            print("{}: {}: {}".format(counter, rec['description'], 
+                rec['command']), file=sys.stderr, flush=True)
 
         print('Pick one:', file=sys.stderr, flush=True)
         picked = int(input())
         execute_command(matching_recs[picked])
     else:
+        print("Found command: {} \n   Command {}".format(matching_recs[0]['description'], 
+                matching_recs[0]['command']), file=sys.stderr, flush=True)
         execute_command(matching_recs[0])
 
 if __name__ == "__main__":
